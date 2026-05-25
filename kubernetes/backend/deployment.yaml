@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meditrack-backend
+  labels:
+    app: meditrack-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: meditrack-backend
+  template:
+    metadata:
+      labels:
+        app: meditrack-backend
+    spec:
+      containers:
+      - name: meditrack-backend
+        image: mediatrackacr.azurecr.io/meditrack-backend:v1
+        ports:
+        - containerPort: 5000
+        env:
+        - name: PORT
+          value: "5000"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

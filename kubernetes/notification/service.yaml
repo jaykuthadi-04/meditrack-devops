@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: meditrack-notification-service
+  labels:
+    app: meditrack-notification
+spec:
+  selector:
+    app: meditrack-notification
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5002
+  type: ClusterIP

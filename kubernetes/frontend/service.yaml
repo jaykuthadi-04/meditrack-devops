@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: meditrack-frontend-service
+  labels:
+    app: meditrack-frontend
+spec:
+  selector:
+    app: meditrack-frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: LoadBalancer

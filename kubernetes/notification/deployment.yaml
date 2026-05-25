@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meditrack-notification
+  labels:
+    app: meditrack-notification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: meditrack-notification
+  template:
+    metadata:
+      labels:
+        app: meditrack-notification
+    spec:
+      containers:
+      - name: meditrack-notification
+        image: mediatrackacr.azurecr.io/meditrack-notification:v2
+        ports:
+        - containerPort: 5002
+        env:
+        - name: PORT
+          value: "5002"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

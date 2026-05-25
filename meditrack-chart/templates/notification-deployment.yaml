@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.notification.name }}
+  labels:
+    app: {{ .Values.notification.name }}
+spec:
+  replicas: {{ .Values.notification.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.notification.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.notification.name }}
+    spec:
+      containers:
+      - name: {{ .Values.notification.name }}
+        image: {{ .Values.notification.image }}:{{ .Values.notification.tag }}
+        ports:
+        - containerPort: {{ .Values.notification.port }}
+        env:
+        - name: PORT
+          value: "{{ .Values.notification.port }}"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.notification.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.notification.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: {{ .Values.notification.resources.requests.memory }}
+            cpu: {{ .Values.notification.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.notification.resources.limits.memory }}
+            cpu: {{ .Values.notification.resources.limits.cpu }}
